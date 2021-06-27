@@ -8,7 +8,7 @@ def ARPSpoof(n_times = 0):
     attacker.get_mac()
     victim = User('192.168.56.101')
         #'08:00:27:b7:c4:af')
-    victim.get_mac()
+    #victim.get_mac()
     arp = ARP(attacker, victim, '192.168.56.102')
     if n_times <= 0:
         while True:
