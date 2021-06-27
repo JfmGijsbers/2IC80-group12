@@ -9,11 +9,9 @@ def get_args():
     parser.add_argument("-g", "--gateway", dest = "gateway_ip", help = "IP Address of the Gateway.")
     options = parser.parse_args()
     if not options.target_ip:
-        #Code to handle if an IP Address of the target is not specified.
-        parser.error("[-] Please specify an IP Address of the target machine, use --help for more info.")
+        parser.error("[-] MISSING PARAMETER '-t' (target IP), use --help for more info.")
     elif not options.gateway_ip:
-        #Code to handle if an IP Address of the gateway is not specified.
-        parser.error("[-] Please specify an IP Address of the gateway, use --help for more info.")
+        parser.error("[-] MISSING PARAMETER '-g' (gateway IP), use --help for more info.")
     return options
 
 def ARPSpoof(n_times = 0):

