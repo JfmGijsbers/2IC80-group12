@@ -14,7 +14,7 @@ class ARP:
         victim_packet = ARPPacket(
             self.attacker,
             self.victim,
-            self.spoof_ip
+            self.gateway
         )
         victim_packet.send()
         
@@ -22,6 +22,6 @@ class ARP:
             gateway_packet = ARPPacket(
                 self.attacker,
                 self.gateway,
-                self.victim.IP
+                self.victim
             )
             gateway_packet.send()
