@@ -1,8 +1,9 @@
 from scapy.all import *
 
 class User:
-    def __init__(self, IP):
+    def __init__(self, IP, MAC = ""):
         self.IP = IP
+        self.MAC = MAC
 
     def get_mac(self):
         arp_req_frame = ARP(pdst = self.IP)
