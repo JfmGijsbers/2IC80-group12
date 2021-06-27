@@ -7,7 +7,7 @@ class User:
 
     def get_mac(self):
         result = sr(ARP(op=ARP.who_has, psrc=self.IP, pdst='192.168.56.102'))
-        print(result)
+        print(result[0])
         self.MAC = result[0][ARP].hwsrc
         print(self.MAC)
         # arp_req_frame = ARP(pdst = self.IP)
