@@ -5,7 +5,7 @@ class User:
         self.IP = IP
 
     def get_mac(self):
-        arp_req_frame = ARP(pdst = self.ip)
+        arp_req_frame = ARP(pdst = self.IP)
         broadcast_ether_frame = Ether(dst = "ff:ff:ff:ff:ff:ff")
         broadcast_ether_arp_req_frame = broadcast_ether_frame / arp_req_frame
         answered_list = srp(broadcast_ether_arp_req_frame, timeout = 1, verbose = False)[0]
