@@ -17,6 +17,7 @@ class ARP:
             self.gateway
         )
         victim_packet.send()
+        print("Poisoned victim's ARP table")
         
         if (mitm):
             gateway_packet = ARPPacket(
@@ -25,3 +26,4 @@ class ARP:
                 self.victim
             )
             gateway_packet.send()
+            print("Poisoned Gateway's ARP table")

