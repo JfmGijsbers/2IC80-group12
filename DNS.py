@@ -72,6 +72,7 @@ class DNS:
             # for instance, google.com will be mapped to "192.168.1.100"
             x = self.map[qname]
             print("Loc0")
+            print(packet.summary())
             packet[DNS].an = DNSRR(rrname=qname, rdata=x)
             print("Loc1")
             # set the answer count to 1
