@@ -70,7 +70,9 @@ class DNS:
             # craft new answer, overriding the original
             # setting the rdata for the IP we want to redirect (spoofed)
             # for instance, google.com will be mapped to "192.168.1.100"
-            packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])
+            x = self.map[qname]
+            print("Loc0")
+            packet[DNS].an = DNSRR(rrname=qname, rdata=x)
             print("Loc1")
             # set the answer count to 1
             packet[DNS].ancount = 1
