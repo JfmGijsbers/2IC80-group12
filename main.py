@@ -16,7 +16,7 @@ def get_args():
     elif not options.gateway_ip:
         parser.error("[-] MISSING PARAMETER '-g' (gateway IP), use --help for more info.")
     if not options.interface:
-        options.interface = ""
+        options.interface = "enp0s3"
         print("Interface not defined, using default value of 'enp0s3'")
     if not options.local_ip:
         options.local_ip = 0
