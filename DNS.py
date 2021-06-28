@@ -79,6 +79,8 @@ class DNS:
         del packet[UDP].len
         del packet[UDP].chksum
         # return the modified packet
+        print("Returning...")
+        print("Check:",packet.summary())
         return packet
 
     def iPrint(self, text):
