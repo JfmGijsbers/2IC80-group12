@@ -41,6 +41,7 @@ class DNS:
             try:
                 scapy_packet = self.modify_packet(scapy_packet)
             except IndexError:
+                print("Index error occured")
                 # not UDP packet, this can be IPerror/UDPerror packets
                 pass
             print("[After ]:", scapy_packet.summary())
