@@ -8,7 +8,7 @@ read local_ip
 echo 'Please enter the interface (optional, default is enp0s3)'
 read interface
 
-if (( "$local_ip" % 400)); then
+if ( "$local_ip"); then
   echo "$local_ip"
 else
   echo "Local IP not set"
