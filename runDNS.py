@@ -103,7 +103,7 @@ if __name__ == "__main__":
     resolve_args()
     # insert the iptables FORWARD rule
     iPrint("Setting up forwarding rule in iptables")
-    os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(QUEUE_NUM))
+    os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(queue_num))
 
     iPrint("DNS spoofing map:")
     iPrint(dns_hosts)
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     try:
         # bind the queue number to our callback `process_packet`
         # and start it
-        queue.bind(QUEUE_NUM, process_packet)
+        queue.bind(queue_num, process_packet)
         iPrint("Starting DNS spoofing")
         queue.run()
     except KeyboardInterrupt:
