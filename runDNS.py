@@ -36,6 +36,9 @@ def setup_map():
     dns_hosts = {}
     for line in lines:
         parts = line.split("-")
+        print(line)
+        print(parts)
+        print()
         dns_hosts[bytes(parts[0], 'utf-8')] = parts[1]
     mapfile.close()
 
