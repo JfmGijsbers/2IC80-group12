@@ -41,7 +41,11 @@ def setup_map():
     dns_hosts = {}
     for line in lines:
         parts = (line.replace("\n","")).split("-")
-        dns_hosts[bytes(parts[0], 'utf-8')] = parts[1]
+        site = parts[0]
+        ip = parts[1]
+        if(not (site[-1] == '.')):
+            site = site + '.'
+        dns_hosts[bytes(site, 'utf-8')] = ip
     mapfile.close()
 
 def iPrint(text, second=None):
