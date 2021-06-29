@@ -41,7 +41,10 @@ def setup_map():
 
 def iPrint(text, second=None):
     if(use_print):
-        print(text, second)
+        if(second==None):
+            print(text)
+        else:
+            print(text, second)
 
 def process_packet(packet):
     """
