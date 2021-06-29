@@ -40,12 +40,8 @@ def setup_map():
 
     dns_hosts = {}
     for line in lines:
-        parts = line.split("-")
-        print(line)
-        print(parts)
-        print()
+        parts = (line.replace("\n","")).split("-")
         dns_hosts[bytes(parts[0], 'utf-8')] = parts[1]
-    print(dns_hosts)
     mapfile.close()
 
 def iPrint(text, second=None):
