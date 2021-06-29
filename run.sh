@@ -7,4 +7,9 @@ echo 'Please enter your own IP (optional, will be calculated if empty)'
 read local_ip
 echo 'Please enter the interface (optional, default is enp0s3)'
 read interface
-echo $target_ip $gateway_ip ${local_ip:'not set'} ${interface:'not set'}
+
+if (( "$local_ip" % 400); then
+  echo "$local_ip"
+else
+  echo "Local IP not set"
+fi
