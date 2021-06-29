@@ -27,7 +27,7 @@ def resolve_args():
     if options.file:
         filename = options.file
     if options.queue:
-        queue_num = options.queue
+        queue_num = int(options.queue)
     if options.use_print:
         if options.use_print == 0:
             use_print = False
