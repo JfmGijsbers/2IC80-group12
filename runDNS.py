@@ -40,6 +40,7 @@ def setup_map():
         print(parts)
         print()
         dns_hosts[bytes(parts[0], 'utf-8')] = parts[1]
+    print(dns_hosts)
     mapfile.close()
 
 def iPrint(text, second=None):
