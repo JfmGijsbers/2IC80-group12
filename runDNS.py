@@ -37,9 +37,9 @@ def setup_map():
         b"kevin.com": "10.0.2.4",
     }
 
-def iPrint(text):
+def iPrint(text, second=None):
     if(use_print):
-        print(text)
+        print(text, second)
 
 def process_packet(packet):
     """
