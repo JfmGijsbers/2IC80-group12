@@ -63,7 +63,7 @@ def queue_callback2(packet):
     #Convert raw packet to a scapy packets for inspection
     scapy_packet = IP(packet.get_payload())
     #Only change DNS responses
-    if scapy_packet.haslayer(DNSQR):
+    if (scapy_packet.haslayer(DNSQR) and not scapy_packet.haslayer(DNSRR)):
         iPrint("Packet received:")
         iPrint("[IP Before]:", scapy_packet.summary())
         try:
@@ -92,6 +92,9 @@ def modify_packet2(packet):
 
     new_packet = IP(dst=packet[IP].src)/UDP(dport=packet[UDP].sport, sport=53)/DNS(id=packet[DNS].id,ancount=1,an=DNSRR(rrname=qname, rdata=dns_map[qname])/DNSRR(rrname=qname, rdata=dns_map[qname]))
     iPrint("Modified:", qname)
+    iPrint(new_packet.summary())
+    iPrint(new_packet[DNS].summary())
+    iPrint(new_packet[DNSRR].summary())
     #Return the packet with the modified resonse
     return new_packet
 
