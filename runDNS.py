@@ -106,6 +106,7 @@ def modify_packet(packet):
 
 if __name__ == "__main__":
     resolve_args()
+    setup_map()
     # insert the iptables FORWARD rule
     iPrint("Setting up forwarding rule in iptables")
     os.system("iptables -I FORWARD -j NFQUEUE --queue-num {}".format(queue_num))
