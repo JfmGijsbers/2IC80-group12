@@ -30,12 +30,14 @@ def resolve_args():
     return options
 
 def setup_map():
-    dns_hosts = {
-        b"www.google.com.": "10.0.2.4",
-        b"google.com.": "10.0.2.4",
-        b"facebook.com.": "10.0.2.4",
-        b"kevin.com": "10.0.2.4",
-    }
+    mapfile = open(filename, 'r')
+    lines = mapfile.readlines()
+
+    dns_hosts = {}
+    for line in lines:
+        parts = line.split("-")
+        dns_hosts[parts[0]] = parts[1]
+    mapfile.close()
 
 def iPrint(text, second=None):
     if(use_print):
