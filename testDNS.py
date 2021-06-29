@@ -5,9 +5,9 @@ import os
 # DNS mapping records, feel free to add/modify this dictionary
 # for example, google.com will be redirected to 192.168.1.100
 dns_hosts = {
-    b"www.google.com.": "104.21.51.146",
-    b"google.com.": "104.21.51.146",
-    b"facebook.com.": "104.21.51.146"
+    b"www.google.com.": "10.0.2.4",
+    b"google.com.": "10.0.2.4",
+    b"facebook.com.": "10.0.2.4"
 }
 
 def process_packet(packet):
