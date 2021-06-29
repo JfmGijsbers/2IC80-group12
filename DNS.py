@@ -51,7 +51,7 @@ class DNS:
         # accept the packet
         packet.accept()
 
-    def modify_packet(packet):
+    def modify_packet(self,packet):
         """
         Modifies the DNS Resource Record `packet` ( the answer part)
         to map our globally defined `dns_hosts` dictionary.
