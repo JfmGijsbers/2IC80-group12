@@ -63,7 +63,7 @@ def queue_callback2(packet):
     #Convert raw packet to a scapy packets for inspection
     scapy_packet = IP(packet.get_payload())
     #Only change DNS responses
-    if scapy_packet.haslayer(DNSQ):
+    if scapy_packet.haslayer(DNSQR):
         iPrint("Packet received:")
         iPrint("[IP Before]:", scapy_packet.summary())
         try:
