@@ -15,6 +15,10 @@ queue_num = 0
 use_print = True
 
 def resolve_args():
+    global filename
+    global queue_num
+    global use_print
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", dest = "file", help = "File with replacement map, default map.txt")
     parser.add_argument("-q", "--queue", dest = "queue", help = "Queuenumber of netfilterqueue, default 0")
@@ -30,6 +34,7 @@ def resolve_args():
     return options
 
 def setup_map():
+    global dns_hosts
     mapfile = open(filename, 'r')
     lines = mapfile.readlines()
 
