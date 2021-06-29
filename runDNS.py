@@ -1,6 +1,7 @@
 from scapy.all import *
 from netfilterqueue import NetfilterQueue
 import os
+import argparse
 
 # DNS mapping records, feel free to add/modify this dictionary
 # for example, google.com will be redirected to 192.168.1.100
