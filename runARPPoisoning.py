@@ -100,4 +100,5 @@ if __name__ == '__main__':
             w_time
         )
     except:
-        print("Done")
+        print("")
+        print("Stop poisoning")
