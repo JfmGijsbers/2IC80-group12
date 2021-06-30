@@ -32,6 +32,8 @@ def get_args():
     else:
         if 'y' in options.silent:
             options.silent = True
+            if options.wait_time:
+                print("Wait time set, but in silent mode. Wait time ignored")
         else:
             options.silent = False
             if not options.wait_time:
