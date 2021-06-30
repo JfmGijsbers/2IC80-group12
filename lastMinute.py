@@ -1,5 +1,6 @@
 from ARP import ARP
 from classes.User import User
+from scapy.all import *
 import time
 import argparse
 import socket
