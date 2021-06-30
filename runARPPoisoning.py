@@ -90,6 +90,8 @@ if __name__ == '__main__':
     mitm = options.mitm
     w_time = options.wait_time
 
+    os.system("sysctl -w net.ipv4.ip_forward=1")
+
     try:
         ARPSpoof(target_ip,
             gateway_ip,
