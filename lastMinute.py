@@ -74,7 +74,7 @@ def ARPSpoof(victim_ip, gateway_ip, interface, attacker_ip, silent = True, mitm 
                 try:
                     time.sleep(wait_time)
                 except KeyboardInterrupt:
-                    print("Hi")
+                    raise
     else:
         arp.spoof()
 
@@ -90,11 +90,14 @@ if __name__ == '__main__':
     mitm = options.mitm
     w_time = options.wait_time
 
-    ARPSpoof(target_ip,
-        gateway_ip,
-        interface,
-        attacker_ip,
-        silent,
-        mitm,
-        w_time
-    )
+    try:
+        ARPSpoof(target_ip,
+            gateway_ip,
+            interface,
+            attacker_ip,
+            silent,
+            mitm,
+            w_time
+        )
+    except:
+        print("Done")
