@@ -81,7 +81,7 @@ if __name__ == '__main__':
     attacker_ip = options.local_ip
     silent = options.silent
     mitm = options.mitm
-    time = options.wait_time
+    w_time = options.wait_time
 
     ARPSpoof(target_ip,
         gateway_ip,
@@ -89,5 +89,5 @@ if __name__ == '__main__':
         attacker_ip,
         silent,
         mitm,
-        time
+        w_time
     )
